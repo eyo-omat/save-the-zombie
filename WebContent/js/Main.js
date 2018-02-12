@@ -16,8 +16,8 @@ mainState.prototype = {
         //game.load.image('tile', 'assets/bird.png');
         game.load.image('player', 'assets/sprites/bird.png');
         game.load.image('wall', 'assets/sprites/pipe.png');
-        game.load.image('coin', 'assets/sprites/tile.png');
-        game.load.image('enemy', 'assets/sprites/pipe.png');
+        game.load.image('asset', 'assets/sprites/tile.png');
+        game.load.image('ditch', 'assets/sprites/pipe.png');
     },
 
     create: function() { 
@@ -42,8 +42,8 @@ mainState.prototype = {
         spaceKey.onDown.add(this.jump, this); 
         
         this.walls = game.add.group();
-        this.enemies = game.add.group();
-        this.coins = game.add.group();
+        this.ditches = game.add.group();
+        this.assets = game.add.group();
         
         // Design the level. x = wall, o = coin, ! = lava.
         var level = [
@@ -75,19 +75,19 @@ mainState.prototype = {
 
                 // Create a coin and add it to the 'coins' group
                 else if (level[i][j] == 'o') {
-                    var coin = game.add.sprite(30+20*j, 30+20*i, 'coin');
-                    this.game.physics.arcade.enable(coin);
-                    coin.inputEnabled = true;
-                    coin.input.enableDrag();
-                    coin.body.immovable = true; 
-                    this.coins.add(coin);
+                    var asset = game.add.sprite(30+20*j, 30+20*i, 'asset');
+                    this.game.physics.arcade.enable(asset);
+                    asset.inputEnabled = true;
+                    asset.input.enableDrag();
+                    asset.body.immovable = true; 
+                    this.assets.add(asset);
                 }
 
-                // Create a enemy and add it to the 'enemies' group
+                // Create a death trap and add it to the 'enemies' group
                 else if (level[i][j] == '!') {
-                    var enemy = game.add.sprite(30+20*j, 30+20*i, 'enemy');
-                    enemy.tint = 0xff00ff;
-                    this.enemies.add(enemy);
+                    var ditch = game.add.sprite(30+20*j, 30+20*i, 'ditch');
+                    ditch.tint = 0xff00ff;
+                    this.enemies.add(ditch);
                 }
             }
         }
@@ -99,10 +99,10 @@ mainState.prototype = {
 //        this.restartGame();
             
         game.physics.arcade.collide(this.player, this.walls);
-        game.physics.arcade.collide(this.player, this.coins);
+        game.physics.arcade.collide(this.player, this.assets);
         
         // Call the 'restart' function when the player touches the enemy
-        game.physics.arcade.overlap(this.player, this.enemies, this.restartGame, null, this);
+        game.physics.arcade.overlap(this.player, this.ditches, this.restartGame, null, this);
         
     },
     
@@ -122,11 +122,6 @@ mainState.prototype = {
     // Restart the game
     reverse: function() {
         this.player.body.velocity.x = -200;
-    },
-    
-    // Function to kill a coin
-    takeCoin: function(player, coin) {
-        coin.kill();
     },
 
 };
