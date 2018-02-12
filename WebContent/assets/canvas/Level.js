@@ -25,19 +25,23 @@ Level.prototype.init = function () {
 	this.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
 	this.scale.pageAlignHorizontally = true;
 	this.scale.pageAlignVertically = true;
-	this.stage.backgroundColor = '#ffffff';
+	this.stage.backgroundColor = '#71c5cf';
 	
 };
 
 Level.prototype.preload = function () {
-	
+	this.load.image('tile', 'assets/sprites/tile.png');
+    this.load.image('pipe', 'assets/sprites/pipe.png');
+    this.load.audio('jump', 'assets/sound/jump.wav'); 
 };
 
 Level.prototype.create = function () {
-	this.add.text(344, 292, 'Hello world!', {"font":"bold 20px Arial"});
-	
-	
-	
+
+};
+
+Level.prototype.update = function (){
+    
+    
 };
 
 /* --- end generated code --- */
