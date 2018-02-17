@@ -1,5 +1,5 @@
 var game;
-
+const DELAY = 2000;
 
 var graphicAssets = {
 
@@ -21,7 +21,7 @@ var mainState = function() {};
 mainState.prototype = {
     preload: function() { 
         //game.load.image('tile', 'assets/bird.png');
-        game.load.image('player', 'assets/sprites/bird.png');
+        game.load.spritesheet('player', 'assets/sprites/professorSpriteSheet.png', 258, 258);
         game.load.image('wall', 'assets/sprites/pipe.png');
         game.load.image('asset', 'assets/sprites/tile.png');
         game.load.image('ditch', 'assets/sprites/pipe.png');
@@ -35,7 +35,11 @@ mainState.prototype = {
     create: function() { 
         //game.stage.backgroundColor = '#71c5cf';  
         game.stage.backgroundColor = '#3598db';
-    
+
+        game.world.setBounds(-20, -20, game.width+40, game.height+40);
+        game.camera.x = 2;
+        game.camera.y = 2;
+
         game.physics.startSystem(Phaser.Physics.ARCADE);
 
         // Add the physics engine to all game objects
@@ -44,7 +48,7 @@ mainState.prototype = {
         //this.tile = game.add.sprite(70, 245, 'tile');
         // Create the player in the middle of the game
         this.player = game.add.sprite(70, 100, 'player');
-        
+        this.player.body.bounce.y = 0.2;
         //game.physics.arcade.enable(this.tile);
 
         this.player.body.gravity.y = 1000;  
@@ -205,23 +209,44 @@ mainState.prototype = {
         }
     },
 
+    resetCam: function(){
+        //Reset camera after shake
+        game.camera.x = 2;
+        game.camera.y = 2;
+    },
+
+    shake: function(){
+        var min = -2;
+        var max = 2;
+        game.camera.x+= Math.floor(Math.random() * (max - min + 1)) + min;
+        game.camera.y+= Math.floor(Math.random() * (max - min + 1)) + min;
+    },
+
+    tntCollision: function (player, tnt) {
+        var him = this;
+
+        if (player.body.touching.right){
+            player.body.velocity.x = -200;
+        } else if (player.body.touching.down) {
+            setTimeout(function () {
+                him.explode(tnt);
+            }, DELAY)
+        } else if (player.body.touching.left) {
+            player.body.velocity.x = 200;
+        }
+    },
+
     explode: function (tnt) {
+        console.table("I am in the explode function");
         tnt.kill();
+        var t = game.time.create(true);
+        t.repeat(20,10,this.shake,this);
+        t.start();
         var explosionGroup = "explosionSmallGroup";
         var explosion = this[explosionGroup].getFirstExists(false);
         explosion.reset(tnt.x, tnt.y);
         explosion.animations.play('explode', 30, false, true);
-    },
-
-    tntCollision: function (player, tnt) {
-        if (player.body.touching.right){
-            player.body.velocity.x = -200;
-        } else if (player.body.touching.down) {
-            game.time.events.add(Phaser.Timer.SECOND * 4, this.explode(tnt), this);
-        } else if (player.body.touching.left) {
-            player.body.velocity.x = 200;
-        }
-
+        t.onComplete.addOnce(this.resetCam,this);
     }
 
 };
