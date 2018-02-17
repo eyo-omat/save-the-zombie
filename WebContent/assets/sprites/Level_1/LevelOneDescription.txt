@@ -1,0 +1,10 @@
+#Level 1 Description
+
+"LevelOneAssembled" shows how it comes together, not necessarily an asset
+
+You can put it together with the other assets.
+
+-"NoneInteractiveBG" behind everything
+-All other assets are in front
+
+"Interactives(Colliders)" show the floor and the doors. Character enters through "Entry", leaves through "Exit", Collides with the floor until there's a space, then he falls

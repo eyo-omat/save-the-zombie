@@ -1,0 +1,13 @@
+#Spring and explosives Assets description (from left to right)
+
+1. Low projection spring (small bounce)
+2. High projection spring (high bounce)
+3. Electric wires (exposed)
+4. Explosive 
+5. Explosive fire start
+6. Explosive fire 2
+7. Explosive fire 3 (final)
+
+Explosive cycle: 4,5,6,7  <Or>  4,(5,6,5,6,5,6,5,6,5,6),7
+
+Alternatevly you can use your explosive sprites for the fire burn down part lol.
