@@ -1,0 +1,11 @@
+#Doc Zombie description (from left to right)
+
+1. Front (for entering door)
+2. Back (for exiting door at end)
+3. Dead 
+4. Normal
+5. Bounce (down)
+6. Bounce (After bounce down)
+
+Bounce cycle: 5,4,6,4,4,4,5 (repeat)
+Long jump (from spring): 5,4,6,4... keep at 4 until he lands
