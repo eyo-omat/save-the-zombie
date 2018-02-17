@@ -21,7 +21,7 @@ var mainState = function() {};
 mainState.prototype = {
     preload: function() { 
         //game.load.image('tile', 'assets/bird.png');
-        game.load.spritesheet('player', 'assets/sprites/professorSpriteSheet.png', 258, 258);
+        game.load.spritesheet('player', 'assets/sprites/professorSpriteSheet2.png', 128, 128, 4);
         game.load.image('wall', 'assets/sprites/pipe.png');
         game.load.image('asset', 'assets/sprites/tile.png');
         game.load.image('ditch', 'assets/sprites/pipe.png');
@@ -47,11 +47,12 @@ mainState.prototype = {
 
         //this.tile = game.add.sprite(70, 245, 'tile');
         // Create the player in the middle of the game
-        this.player = game.add.sprite(70, 100, 'player');
-        this.player.body.bounce.y = 0.2;
+        this.player = game.add.sprite(70, 10, 'player', 0);
+        this.player.animations.add('jump', [0, 1, 2, 3], 10, true);
+        this.player.animations.add('walk', 5, true);
         //game.physics.arcade.enable(this.tile);
 
-        this.player.body.gravity.y = 1000;  
+        this.player.body.gravity.y = 1000;
         
         var spaceKey = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
         spaceKey.onDown.add(this.jump, this); 
@@ -71,6 +72,9 @@ mainState.prototype = {
         // Design the level. x = wall, o = coin, ! = lava.
         var level = [
             'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',
+            '                         ',
+            '                         ',
+            '                         ',
             '                         ',
             '                         ',
             '                         ',
@@ -156,8 +160,8 @@ mainState.prototype = {
     // Make the bird jump 
     jump: function() {
         // Add a vertical velocity to the bird
-        //this.tile.body.velocity.y = -350;
         this.player.body.velocity.x = 200;
+        this.player.animations.play('jump');
     },
 
     // Restart the game
@@ -184,6 +188,7 @@ mainState.prototype = {
             player.body.velocity.x = -200;
         } else if (player.body.touching.down) {
             player.body.velocity.y = -250;
+            player.animations.play('jump');
         } else if (player.body.touching.left) {
             player.body.velocity.x = 200;
         }
