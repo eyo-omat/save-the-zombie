@@ -106,7 +106,7 @@ mainState.prototype = {
             '                             ',
             '                           ',
             'xxxxxxxxxxxxxxxxx           xxxxxxxxxxxxxxxxxx     xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',
-            '                             ',
+            '                  !    !      ',
             'o   t   s'
         ];
         
