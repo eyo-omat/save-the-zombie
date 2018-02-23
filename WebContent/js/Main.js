@@ -1,5 +1,5 @@
 var game;
-const DELAY = 2000;
+const DELAY = 500;
 
 var graphicAssets = {
 
@@ -11,9 +11,9 @@ var graphicAssets = {
 window.onload = function() {
 	
     // Initialize the game and start our state
-    game = new Phaser.Game(700, 490);  
+    game = new Phaser.Game(1700, 830);
     game.state.add('main', mainState);  
-    game.state.start('main')
+    game.state.start('main');
 };
 
 
@@ -21,12 +21,17 @@ var mainState = function() {};
 mainState.prototype = {
     preload: function() { 
         //game.load.image('tile', 'assets/bird.png');
-        game.load.spritesheet('player', 'assets/sprites/professorSpriteSheet2.png', 128, 128, 4);
-        game.load.image('wall', 'assets/sprites/pipe.png');
+        //game.load.spritesheet('player', 'assets/sprites/professorSpriteSheet2.png', 128, 128, 4);
+        game.load.spritesheet('player', 'assets/sprites/ProfSpriteEli.png', 128, 128, 6);
+        game.load.spritesheet('assets', 'assets/sprites/SpringsWireExplosion.png', 128, 128, 7);
+        game.load.image('wall', 'assets/sprites/Level_1/BridgeTile.png');
+        game.load.image('entryDoor', 'assets/sprites/Level_1/EntryDoor.png');
+        game.load.image('exitDoor', 'assets/sprites/Level_1/ExitDoor.png');
         game.load.image('asset', 'assets/sprites/tile.png');
         game.load.image('ditch', 'assets/sprites/pipe.png');
         game.load.image('spring', 'assets/sprites/tile.png');
         game.load.image('tnt', 'assets/sprites/bird.png');
+        game.load.image('background', 'assets/sprites/Level_1/NoneInteractiveBG.png');
         game.load.spritesheet(graphicAssets.explosionLarge.name, graphicAssets.explosionLarge.URL,
             graphicAssets.explosionLarge.width, graphicAssets.explosionLarge.height,
             graphicAssets.explosionLarge.frames);
@@ -34,7 +39,13 @@ mainState.prototype = {
 
     create: function() { 
         //game.stage.backgroundColor = '#71c5cf';  
-        game.stage.backgroundColor = '#3598db';
+        //game.stage.backgroundColor = '#3598db';
+        this.bg = game.add.sprite(850, 395, 'background');
+        this.bg.scale.setTo(1.1);
+        this.bg.anchor.setTo(0.5);
+
+        game.add.sprite(-50, 150, 'entryDoor');
+        game.add.sprite(250, 150, 'exitDoor');
 
         game.world.setBounds(-20, -20, game.width+40, game.height+40);
         game.camera.x = 2;
@@ -47,9 +58,9 @@ mainState.prototype = {
 
         //this.tile = game.add.sprite(70, 245, 'tile');
         // Create the player in the middle of the game
-        this.player = game.add.sprite(70, 10, 'player', 0);
-        this.player.animations.add('jump', [0, 1, 2, 3], 10, true);
-        this.player.animations.add('walk', 5, true);
+        this.player = game.add.sprite(55, 300, 'player', 4);
+        this.player.animations.add('jump', [3, 5, 4]);
+        this.player.animations.add('walk', [3, 4]);
         //game.physics.arcade.enable(this.tile);
 
         this.player.body.gravity.y = 1000;
@@ -71,7 +82,7 @@ mainState.prototype = {
 
         // Design the level. x = wall, o = coin, ! = lava.
         var level = [
-            'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',
+            '                   ',
             '                         ',
             '                         ',
             '                         ',
@@ -80,12 +91,22 @@ mainState.prototype = {
             '                         ',
             '                         ',
             '                         ',
-            'xxxxxxxxxxxxxxxxx       x',
-            'xxxxxxxxxxxxxxxxx       x',
-            'xxxxxxxxxxxxxxxxx       xxxxxxxxxxxxxxxxxx',
-            'xxxxxxxxxxxxxxxxx       xxxxxxxxxxxxxxxxxx',
-            'xxxxxxxxxxxxxxxxx! ! !!!x',
-            '                      ',
+            '                         ',
+            '                         ',
+            '                         ',
+            '                             ',
+            '                             ',
+            '                             ',
+            '                             ',
+            '                             ',
+            '                             ',
+            '                             ',
+            '                             ',
+            '                             ',
+            '                             ',
+            '                           ',
+            'xxxxxxxxxxxxxxxxx           xxxxxxxxxxxxxxxxxx     xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',
+            '                             ',
             'o   t   s'
         ];
         
@@ -102,9 +123,9 @@ mainState.prototype = {
 
                 // Create a spring and add it to the 'springs' group
                 else if (level[i][j] == 's') {
-                    var spring = game.add.sprite(30+20*j, 30+20*i, 'spring');
+                    var spring = game.add.sprite(100, 550, 'assets', 0);
                     this.game.physics.arcade.enable(spring);
-                    spring.tint = 0xff00ff; //'#DAA520';
+                    //spring.tint = 0xff00ff; //'#DAA520';
                     spring.inputEnabled = true;
                     spring.input.enableDrag();
                     spring.body.immovable = true;
@@ -113,8 +134,9 @@ mainState.prototype = {
 
                 // Create a asset and add it to the 'assets' group
                 else if (level[i][j] == 'o') {
-                    var asset = game.add.sprite(30+20*j, 30+20*i, 'asset');
+                    var asset = game.add.sprite(300, 600, 'asset');
                     this.game.physics.arcade.enable(asset);
+                    asset.tint = 0xff000f;
                     asset.inputEnabled = true;
                     asset.input.enableDrag();
                     asset.body.immovable = true;
@@ -123,19 +145,20 @@ mainState.prototype = {
                 }
                 // Create a tnt and add it to the 'tnts' group
                 else if (level[i][j] == 't') {
-                    var tnt = game.add.sprite(30+20*j, 30+20*i, 'tnt');
+                    var tnt = game.add.sprite(200, 550, 'assets', 3);
                     this.game.physics.arcade.enable(tnt);
-                    tnt.tint = 0xff000f; //'#DAA520';
+                    //tnt.tint = 0xff000f; //'#DAA520';
                     tnt.inputEnabled = true;
                     tnt.input.enableDrag();
                     tnt.body.immovable = true;
+                    tnt.animations.add('explodes', [4, 5, 6], 30);
                     this.tnts.add(tnt);
                 }
 
                 // Create a death trap and add it to the 'ditches' group
                 else if (level[i][j] == '!') {
-                    var ditch = game.add.sprite(30+20*j, 30+20*i, 'ditch');
-                    ditch.tint = 0xff00ff;
+                    var ditch = game.add.sprite(30+20*j, 30+20*i, 'assets', 2);
+                    //ditch.tint = 0xff00ff;
                     this.ditches.add(ditch);
                 }
             }
@@ -146,7 +169,7 @@ mainState.prototype = {
     update: function() {
 //        if (this.tile.y < 0 || this.tile.y > 490)
 //        this.restartGame();
-        this.checkBoundaries(this.player);
+        //this.checkBoundaries(this.player);
         game.physics.arcade.collide(this.player, this.walls);
         game.physics.arcade.collide(this.player, this.assets, this.reverse, null, this);
         game.physics.arcade.collide(this.player, this.springs, this.springCollisionHandler, null, this);
@@ -161,7 +184,7 @@ mainState.prototype = {
     jump: function() {
         // Add a vertical velocity to the bird
         this.player.body.velocity.x = 200;
-        this.player.animations.play('jump');
+        this.player.animations.play('walk', 10, true, false);
     },
 
     // Restart the game
@@ -187,7 +210,7 @@ mainState.prototype = {
         if (player.body.touching.right){
             player.body.velocity.x = -200;
         } else if (player.body.touching.down) {
-            player.body.velocity.y = -250;
+            player.body.velocity.y = -350;
             player.animations.play('jump');
         } else if (player.body.touching.left) {
             player.body.velocity.x = 200;
@@ -232,26 +255,41 @@ mainState.prototype = {
 
         if (player.body.touching.right){
             player.body.velocity.x = -200;
+            setTimeout(function () {
+                //him.explode(tnt);
+                //tnt.kill();
+                var t = game.time.create(true);
+                t.repeat(20,10,him.shake,him);
+                t.start();
+                tnt.animations.play('explodes', 10, false, true);
+                t.onComplete.addOnce(him.resetCam,him);
+            }, DELAY)
         } else if (player.body.touching.down) {
             setTimeout(function () {
                 him.explode(tnt);
+                tnt.kill();
             }, DELAY)
         } else if (player.body.touching.left) {
-            player.body.velocity.x = 200;
+            //player.body.velocity.x = 200;
+            setTimeout(function () {
+                him.explode(tnt);
+                tnt.kill();
+            }, DELAY)
         }
     },
 
     explode: function (tnt) {
         console.table("I am in the explode function");
-        tnt.kill();
         var t = game.time.create(true);
         t.repeat(20,10,this.shake,this);
         t.start();
-        var explosionGroup = "explosionSmallGroup";
-        var explosion = this[explosionGroup].getFirstExists(false);
-        explosion.reset(tnt.x, tnt.y);
-        explosion.animations.play('explode', 30, false, true);
+        //var explosionGroup = "explosionSmallGroup";
+        //var explosion = this[explosionGroup].getFirstExists(false);
+        //explosion.reset(tnt.x, tnt.y);
+        //explosion.animations.play('explode', 30, false, true);
+        tnt.animations.play('explodes', 30, false, true);
         t.onComplete.addOnce(this.resetCam,this);
+
     }
 
 };
